@@ -291,8 +291,11 @@ class ShopTrackApp {
     // History Management
     async loadHistory() {
         try {
+            console.log('Loading history...');
             const response = await api.getHistory();
+            console.log('History response:', response);
             this.history = response.data || [];
+            console.log('History data:', this.history);
             this.renderHistory();
         } catch (error) {
             console.error('Failed to load history:', error);
@@ -302,13 +305,21 @@ class ShopTrackApp {
 
     renderHistory() {
         const container = document.getElementById('history-list');
-        if (!container) return;
+        console.log('Rendering history, container:', container);
+        console.log('History length:', this.history.length);
+        
+        if (!container) {
+            console.error('History container not found!');
+            return;
+        }
 
         if (this.history.length === 0) {
+            console.log('No history data, showing empty message');
             container.innerHTML = '<p class="no-data">No transaction history found.</p>';
             return;
         }
 
+        console.log('Rendering history items:', this.history);
         container.innerHTML = this.history.map(transaction => this.createHistoryItem(transaction)).join('');
     }
 
