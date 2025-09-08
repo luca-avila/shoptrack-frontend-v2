@@ -200,6 +200,12 @@ class ShopTrackApp {
     async handleProductSubmit(e) {
         e.preventDefault();
         
+        // Prevent double submission
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        if (submitBtn.disabled) {
+            return; // Already processing
+        }
+        
         const formData = {
             name: document.getElementById('productName').value.trim(),
             price: parseFloat(document.getElementById('productPrice').value),
@@ -214,7 +220,8 @@ class ShopTrackApp {
         }
 
         try {
-            const submitBtn = e.target.querySelector('button[type="submit"]');
+            // Disable submit button and show loading
+            submitBtn.disabled = true;
             APIUtils.showLoading(submitBtn);
 
             if (this.editingProduct) {
@@ -230,7 +237,8 @@ class ShopTrackApp {
         } catch (error) {
             APIUtils.showMessage(error.message || 'Failed to save product', 'error');
         } finally {
-            const submitBtn = e.target.querySelector('button[type="submit"]');
+            // Re-enable submit button and hide loading
+            submitBtn.disabled = false;
             APIUtils.hideLoading(submitBtn);
         }
     }

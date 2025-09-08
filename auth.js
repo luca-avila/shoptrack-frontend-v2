@@ -168,9 +168,9 @@ class AuthManager {
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('main-app').style.display = 'flex';
         
-        // Initialize main app if it exists
+        // Refresh data in main app if it exists (don't re-initialize)
         if (window.app) {
-            window.app.init();
+            window.app.refreshData();
         }
     }
 
