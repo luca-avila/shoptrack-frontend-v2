@@ -63,7 +63,8 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
-select {
+select,
+textarea {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ddd;
@@ -73,7 +74,8 @@ select {
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
@@ -326,6 +328,14 @@ select:focus {
 .product-stock {
     color: #666;
     font-size: 0.9rem;
+}
+
+.product-description {
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    font-style: italic;
+    line-height: 1.4;
 }
 
 .stock-low {
