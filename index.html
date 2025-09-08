@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopTrack - Inventory Management</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Login/Register Form -->
+        <div id="auth-section" class="section">
+            <div class="auth-container">
+                <h1>ShopTrack</h1>
+                <p class="subtitle">Inventory Management System</p>
+                
+                <div id="login-form">
+                    <h2>Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <input type="text" id="loginUsername" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="loginPassword" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <p class="auth-switch">Don't have an account? <a href="#" id="showRegister">Register</a></p>
+                </div>
+                
+                <div id="register-form" style="display: none;">
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <input type="text" id="registerUsername" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="registerEmail" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="registerPassword" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                    <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Login</a></p>
+                </div>
+                
+                <div id="auth-message" class="message"></div>
+            </div>
+        </div>
+
+        <!-- Main Application (hidden until logged in) -->
+        <div id="main-app" class="section" style="display: none;">
+            <header class="app-header">
+                <div class="header-content">
+                    <h1>ShopTrack</h1>
+                    <div class="user-info">
+                        <span id="welcome-message"></span>
+                        <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                    </div>
+                </div>
+            </header>
+
+            <nav class="app-nav">
+                <button class="nav-btn active" data-section="products">Products</button>
+                <button class="nav-btn" data-section="history">History</button>
+            </nav>
+
+            <main class="app-main">
+                <!-- Products Section -->
+                <div id="products-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Products</h2>
+                        <button id="add-product-btn" class="btn btn-primary">Add Product</button>
+                    </div>
+                    
+                    <div id="product-form" class="form-container" style="display: none;">
+                        <h3>Add/Edit Product</h3>
+                        <form id="productForm">
+                            <input type="hidden" id="productId">
+                            <div class="form-group">
+                                <input type="text" id="productName" placeholder="Product Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="productPrice" placeholder="Price" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="productStock" placeholder="Stock" min="0" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancel-product" class="btn btn-secondary">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="products-list" class="products-grid"></div>
+                </div>
+
+                <!-- History Section -->
+                <div id="history-section" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2>Transaction History</h2>
+                        <div class="history-filters">
+                            <select id="action-filter">
+                                <option value="">All Actions</option>
+                                <option value="buy">Buy</option>
+                                <option value="sell">Sell</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="history-list" class="history-list"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
