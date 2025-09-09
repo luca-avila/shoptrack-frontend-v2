@@ -314,7 +314,12 @@ class ShopTrackApp {
 
     renderHistory() {
         const container = document.getElementById('history-list');
+        const historySection = document.getElementById('history-section');
+        
         console.log('Rendering history, container:', container);
+        console.log('History section:', historySection);
+        console.log('History section display:', historySection ? historySection.style.display : 'not found');
+        console.log('History section classList:', historySection ? historySection.classList.toString() : 'not found');
         console.log('History length:', this.history.length);
         console.log('History data:', this.history);
         
@@ -337,6 +342,10 @@ class ShopTrackApp {
         
         console.log('Generated HTML:', historyHTML);
         container.innerHTML = historyHTML;
+        
+        // Test if HTML was actually inserted
+        console.log('Container innerHTML after update:', container.innerHTML);
+        console.log('Container children count:', container.children.length);
     }
 
     createHistoryItem(transaction) {
