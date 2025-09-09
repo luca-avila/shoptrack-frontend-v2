@@ -114,6 +114,7 @@ class ShopTrackApp {
                 <div class="product-header">
                     <h3 class="product-name">${this.escapeHtml(product.name)}</h3>
                     <div class="product-actions">
+                        <button class="btn btn-small btn-primary view-history" data-product-id="${product.id}">History</button>
                         <button class="btn btn-small btn-secondary edit-product" data-product-id="${product.id}">Edit</button>
                         <button class="btn btn-small btn-danger delete-product" data-product-id="${product.id}">Delete</button>
                     </div>
@@ -134,6 +135,14 @@ class ShopTrackApp {
     }
 
     attachProductEventListeners() {
+        // View history buttons
+        document.querySelectorAll('.view-history').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const productId = parseInt(e.target.dataset.productId);
+                this.viewProductHistory(productId);
+            });
+        });
+
         // Edit buttons
         document.querySelectorAll('.edit-product').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -298,6 +307,72 @@ class ShopTrackApp {
             console.error('Stock management error:', error);
             APIUtils.showMessage(error.message || `Failed to ${action} stock`, 'error');
         }
+    }
+
+    async viewProductHistory(productId) {
+        try {
+            const product = this.products.find(p => p.id === productId);
+            if (!product) {
+                APIUtils.showMessage('Product not found', 'error');
+                return;
+            }
+
+            // Load product history
+            const response = await api.getTransactionsByProduct(productId);
+            const productHistory = response.data || [];
+            
+            // Sort by date (recent first)
+            productHistory.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
+            // Show product history modal
+            this.showProductHistoryModal(product, productHistory);
+        } catch (error) {
+            console.error('Failed to load product history:', error);
+            APIUtils.showMessage('Failed to load product history', 'error');
+        }
+    }
+
+    showProductHistoryModal(product, history) {
+        // Create modal HTML
+        const modalHTML = `
+            <div id="product-history-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Transaction History: ${this.escapeHtml(product.name)}</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="product-info">
+                            <p><strong>Price:</strong> ${APIUtils.formatCurrency(product.price)}</p>
+                            <p><strong>Current Stock:</strong> ${product.stock}</p>
+                            ${product.description ? `<p><strong>Description:</strong> ${this.escapeHtml(product.description)}</p>` : ''}
+                        </div>
+                        <div class="history-section">
+                            <h4>Transaction History</h4>
+                            <div id="product-history-list" class="history-list">
+                                ${history.length === 0 ? '<p class="no-data">No transactions found for this product.</p>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to page
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Render history if there are transactions
+        if (history.length > 0) {
+            const historyContainer = document.getElementById('product-history-list');
+            historyContainer.innerHTML = history.map(transaction => this.createHistoryItem(transaction)).join('');
+        }
+        
+        // Add click outside to close
+        document.getElementById('product-history-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'product-history-modal') {
+                e.target.remove();
+            }
+        });
     }
 
     // History Management
