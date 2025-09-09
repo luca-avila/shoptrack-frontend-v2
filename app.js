@@ -270,6 +270,7 @@ class ShopTrackApp {
         }
 
         try {
+            console.log(`Managing stock: ${action} ${quantity} for product ${productId}`);
             let response;
             switch (action) {
                 case 'add':
@@ -282,11 +283,16 @@ class ShopTrackApp {
                     response = await api.setStock(productId, quantity);
                     break;
             }
+            console.log('Stock management response:', response);
 
             APIUtils.showMessage(`Stock ${action}ed successfully!`, 'success');
             input.value = '';
             this.loadProducts();
+            
+            // Also reload history to see if transaction was created
+            this.loadHistory();
         } catch (error) {
+            console.error('Stock management error:', error);
             APIUtils.showMessage(error.message || `Failed to ${action} stock`, 'error');
         }
     }
@@ -294,8 +300,11 @@ class ShopTrackApp {
     // History Management
     async loadHistory() {
         try {
+            console.log('Loading history...');
             const response = await api.getHistory();
+            console.log('History API response:', response);
             this.history = response.data || [];
+            console.log('History data:', this.history);
             this.renderHistory();
         } catch (error) {
             console.error('Failed to load history:', error);
