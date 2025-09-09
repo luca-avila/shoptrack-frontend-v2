@@ -13,11 +13,8 @@ class ShopTrackApp {
         // Set initial section to products
         this.currentSection = 'products';
         
-        // Only load data if user is authenticated
-        if (authManager.isAuthenticated()) {
-            this.loadProducts();
-            this.loadHistory();
-        }
+        // Don't load data here - let the auth manager handle it
+        // when authentication is confirmed
     }
 
     setupEventListeners() {

@@ -172,8 +172,28 @@ class AuthManager {
         if (window.app) {
             // Ensure we're on the products section and load data
             window.app.currentSection = 'products';
-            window.app.loadProducts();
-            window.app.loadHistory();
+            
+            // Show the products section
+            document.querySelectorAll('.content-section').forEach(el => {
+                el.classList.remove('active');
+                el.style.display = 'none';
+            });
+            
+            const productsSection = document.getElementById('products-section');
+            productsSection.classList.add('active');
+            productsSection.style.display = 'block';
+            
+            // Update navigation button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('[data-section="products"]').classList.add('active');
+            
+            // Load data with a small delay to ensure DOM is ready
+            setTimeout(() => {
+                window.app.loadProducts();
+                window.app.loadHistory();
+            }, 100);
         }
     }
 
