@@ -110,11 +110,10 @@ class ShopTrackApp {
         const stockClass = isLowStock ? 'stock-low' : '';
         
         return `
-            <div class="product-card" data-product-id="${product.id}">
+            <div class="product-card clickable-product" data-product-id="${product.id}">
                 <div class="product-header">
                     <h3 class="product-name">${this.escapeHtml(product.name)}</h3>
                     <div class="product-actions">
-                        <button class="btn btn-small btn-primary view-history" data-product-id="${product.id}">History</button>
                         <button class="btn btn-small btn-secondary edit-product" data-product-id="${product.id}">Edit</button>
                         <button class="btn btn-small btn-danger delete-product" data-product-id="${product.id}">Delete</button>
                     </div>
@@ -135,10 +134,14 @@ class ShopTrackApp {
     }
 
     attachProductEventListeners() {
-        // View history buttons
-        document.querySelectorAll('.view-history').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const productId = parseInt(e.target.dataset.productId);
+        // Product card click (for history view)
+        document.querySelectorAll('.clickable-product').forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Don't trigger if clicking on buttons or inputs
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') {
+                    return;
+                }
+                const productId = parseInt(e.currentTarget.dataset.productId);
                 this.viewProductHistory(productId);
             });
         });
@@ -146,6 +149,7 @@ class ShopTrackApp {
         // Edit buttons
         document.querySelectorAll('.edit-product').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card click
                 const productId = parseInt(e.target.dataset.productId);
                 this.editProduct(productId);
             });
@@ -154,6 +158,7 @@ class ShopTrackApp {
         // Delete buttons
         document.querySelectorAll('.delete-product').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card click
                 const productId = parseInt(e.target.dataset.productId);
                 this.deleteProduct(productId);
             });
@@ -162,6 +167,7 @@ class ShopTrackApp {
         // Stock management buttons
         document.querySelectorAll('.add-stock').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card click
                 const productId = parseInt(e.target.dataset.productId);
                 this.manageStock(productId, 'add');
             });
@@ -169,6 +175,7 @@ class ShopTrackApp {
 
         document.querySelectorAll('.remove-stock').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card click
                 const productId = parseInt(e.target.dataset.productId);
                 this.manageStock(productId, 'remove');
             });
@@ -176,6 +183,7 @@ class ShopTrackApp {
 
         document.querySelectorAll('.set-stock').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card click
                 const productId = parseInt(e.target.dataset.productId);
                 this.manageStock(productId, 'set');
             });
