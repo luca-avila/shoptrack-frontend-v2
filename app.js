@@ -121,7 +121,7 @@ class ShopTrackApp {
                 <div class="product-details">
                     <div class="product-price">${APIUtils.formatCurrency(product.price)}</div>
                     <div class="product-stock ${stockClass}">Stock: ${product.stock}</div>
-                    ${product.description ? `<div class="product-description">${this.escapeHtml(product.description)}</div>` : '<div class="product-description" style="color: #999; font-style: italic;">No description</div>'}
+                    ${product.description ? `<div class="product-description">${this.escapeHtml(product.description)}</div>` : ''}
                 </div>
                 <div class="stock-actions">
                     <input type="number" class="stock-input" placeholder="Qty" min="1" data-product-id="${product.id}">
