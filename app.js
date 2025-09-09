@@ -10,6 +10,9 @@ class ShopTrackApp {
 
     init() {
         this.setupEventListeners();
+        // Set initial section to products
+        this.currentSection = 'products';
+        
         // Only load data if user is authenticated
         if (authManager.isAuthenticated()) {
             this.loadProducts();
@@ -305,6 +308,10 @@ class ShopTrackApp {
         try {
             const response = await api.getHistory();
             this.history = response.data || [];
+            
+            // Sort history by created_at date (recent first)
+            this.history.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
             this.renderHistory();
         } catch (error) {
             console.error('Failed to load history:', error);
@@ -315,6 +322,7 @@ class ShopTrackApp {
     renderHistory() {
         const container = document.getElementById('history-list');
         if (!container) return;
+        
 
         if (this.history.length === 0) {
             container.innerHTML = '<p class="no-data">No transaction history found.</p>';
@@ -370,11 +378,9 @@ class ShopTrackApp {
 
     // Public methods for external access
     refreshData() {
-        if (this.currentSection === 'products') {
-            this.loadProducts();
-        } else if (this.currentSection === 'history') {
-            this.loadHistory();
-        }
+        // Always load both products and history to ensure data is fresh
+        this.loadProducts();
+        this.loadHistory();
     }
 }
 

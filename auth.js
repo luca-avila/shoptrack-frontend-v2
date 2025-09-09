@@ -168,9 +168,12 @@ class AuthManager {
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('main-app').style.display = 'flex';
         
-        // Refresh data in main app if it exists (don't re-initialize)
+        // Load data in main app if it exists
         if (window.app) {
-            window.app.refreshData();
+            // Ensure we're on the products section and load data
+            window.app.currentSection = 'products';
+            window.app.loadProducts();
+            window.app.loadHistory();
         }
     }
 
