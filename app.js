@@ -314,21 +314,39 @@ class ShopTrackApp {
 
     renderHistory() {
         const container = document.getElementById('history-list');
-        if (!container) return;
+        console.log('Rendering history, container:', container);
+        console.log('History length:', this.history.length);
+        console.log('History data:', this.history);
+        
+        if (!container) {
+            console.error('History container not found!');
+            return;
+        }
 
         if (this.history.length === 0) {
+            console.log('No history data, showing empty message');
             container.innerHTML = '<p class="no-data">No transaction history found.</p>';
             return;
         }
 
-        container.innerHTML = this.history.map(transaction => this.createHistoryItem(transaction)).join('');
+        console.log('Rendering history items:', this.history);
+        const historyHTML = this.history.map(transaction => {
+            console.log('Creating history item for:', transaction);
+            return this.createHistoryItem(transaction);
+        }).join('');
+        
+        console.log('Generated HTML:', historyHTML);
+        container.innerHTML = historyHTML;
     }
 
     createHistoryItem(transaction) {
+        console.log('Creating history item with transaction:', transaction);
+        console.log('Transaction keys:', Object.keys(transaction));
+        
         const actionClass = transaction.action === 'buy' ? 'action-buy' : 'action-sell';
         const actionText = transaction.action === 'buy' ? 'Bought' : 'Sold';
         
-        return `
+        const html = `
             <div class="history-item">
                 <div class="history-details">
                     <div class="history-product">${this.escapeHtml(transaction.product_name)}</div>
@@ -342,6 +360,9 @@ class ShopTrackApp {
                 </div>
             </div>
         `;
+        
+        console.log('Generated history item HTML:', html);
+        return html;
     }
 
     async filterHistory(action) {
