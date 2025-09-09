@@ -60,8 +60,13 @@ class ShopTrackApp {
         // Show/hide content sections
         document.querySelectorAll('.content-section').forEach(el => {
             el.classList.remove('active');
+            el.style.display = 'none'; // Ensure all sections are hidden
         });
-        document.getElementById(`${section}-section`).classList.add('active');
+        
+        // Show the active section
+        const activeSection = document.getElementById(`${section}-section`);
+        activeSection.classList.add('active');
+        activeSection.style.display = 'block'; // Force display
 
         this.currentSection = section;
 
@@ -270,7 +275,6 @@ class ShopTrackApp {
         }
 
         try {
-            console.log(`Managing stock: ${action} ${quantity} for product ${productId}`);
             let response;
             switch (action) {
                 case 'add':
@@ -283,7 +287,6 @@ class ShopTrackApp {
                     response = await api.setStock(productId, quantity);
                     break;
             }
-            console.log('Stock management response:', response);
 
             APIUtils.showMessage(`Stock ${action}ed successfully!`, 'success');
             input.value = '';
@@ -300,11 +303,8 @@ class ShopTrackApp {
     // History Management
     async loadHistory() {
         try {
-            console.log('Loading history...');
             const response = await api.getHistory();
-            console.log('History API response:', response);
             this.history = response.data || [];
-            console.log('History data:', this.history);
             this.renderHistory();
         } catch (error) {
             console.error('Failed to load history:', error);
@@ -314,48 +314,21 @@ class ShopTrackApp {
 
     renderHistory() {
         const container = document.getElementById('history-list');
-        const historySection = document.getElementById('history-section');
-        
-        console.log('Rendering history, container:', container);
-        console.log('History section:', historySection);
-        console.log('History section display:', historySection ? historySection.style.display : 'not found');
-        console.log('History section classList:', historySection ? historySection.classList.toString() : 'not found');
-        console.log('History length:', this.history.length);
-        console.log('History data:', this.history);
-        
-        if (!container) {
-            console.error('History container not found!');
-            return;
-        }
+        if (!container) return;
 
         if (this.history.length === 0) {
-            console.log('No history data, showing empty message');
             container.innerHTML = '<p class="no-data">No transaction history found.</p>';
             return;
         }
 
-        console.log('Rendering history items:', this.history);
-        const historyHTML = this.history.map(transaction => {
-            console.log('Creating history item for:', transaction);
-            return this.createHistoryItem(transaction);
-        }).join('');
-        
-        console.log('Generated HTML:', historyHTML);
-        container.innerHTML = historyHTML;
-        
-        // Test if HTML was actually inserted
-        console.log('Container innerHTML after update:', container.innerHTML);
-        console.log('Container children count:', container.children.length);
+        container.innerHTML = this.history.map(transaction => this.createHistoryItem(transaction)).join('');
     }
 
     createHistoryItem(transaction) {
-        console.log('Creating history item with transaction:', transaction);
-        console.log('Transaction keys:', Object.keys(transaction));
-        
         const actionClass = transaction.action === 'buy' ? 'action-buy' : 'action-sell';
         const actionText = transaction.action === 'buy' ? 'Bought' : 'Sold';
         
-        const html = `
+        return `
             <div class="history-item">
                 <div class="history-details">
                     <div class="history-product">${this.escapeHtml(transaction.product_name)}</div>
@@ -369,9 +342,6 @@ class ShopTrackApp {
                 </div>
             </div>
         `;
-        
-        console.log('Generated history item HTML:', html);
-        return html;
     }
 
     async filterHistory(action) {
