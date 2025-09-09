@@ -12,6 +12,7 @@ class ShopTrackApp {
         this.setupEventListeners();
         // Set initial section to products
         this.currentSection = 'products';
+        this.searchTerm = '';
         
         // Don't load data here - let the auth manager handle it
         // when authentication is confirmed
@@ -34,6 +35,12 @@ class ShopTrackApp {
         const addProductBtn = document.getElementById('add-product-btn');
         if (addProductBtn) {
             addProductBtn.addEventListener('click', () => this.showProductForm());
+        }
+
+        // Search input
+        const searchInput = document.getElementById('product-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => this.handleSearch(e));
         }
 
         // Cancel product button
@@ -99,7 +106,22 @@ class ShopTrackApp {
             return;
         }
 
-        container.innerHTML = this.products.map(product => this.createProductCard(product)).join('');
+        // Filter products based on search term
+        const filteredProducts = this.products.filter(product => {
+            if (!this.searchTerm) return true;
+            
+            const name = product.name.toLowerCase();
+            const description = (product.description || '').toLowerCase();
+            
+            return name.includes(this.searchTerm) || description.includes(this.searchTerm);
+        });
+
+        if (filteredProducts.length === 0) {
+            container.innerHTML = '<p class="no-data">No products match your search.</p>';
+            return;
+        }
+
+        container.innerHTML = filteredProducts.map(product => this.createProductCard(product)).join('');
         
         // Add event listeners to product cards
         this.attachProductEventListeners();
@@ -200,6 +222,11 @@ class ShopTrackApp {
         document.getElementById('product-form').style.display = 'none';
         this.editingProduct = null;
         this.clearProductForm();
+    }
+
+    handleSearch(e) {
+        this.searchTerm = e.target.value.toLowerCase().trim();
+        this.renderProducts();
     }
 
     clearProductForm() {
