@@ -139,6 +139,8 @@ class AuthManager {
             
             APIUtils.showMessage('Registration successful!', 'success');
         } catch (error) {
+            console.error('Registration error:', error);
+            console.error('Error message:', error.message);
             APIUtils.showMessage(error.message || 'Registration failed', 'error');
         } finally {
             const registerBtn = e.target.querySelector('button[type="submit"]');

@@ -29,11 +29,13 @@ class API {
             const data = await response.json();
 
             if (!response.ok) {
+                console.error('HTTP error response:', response.status, data);
                 throw new Error(data.message || `HTTP error! status: ${response.status}`);
             }
 
             // Backend returns {success: true, data: {...}, message: "..."}
             if (data.success === false) {
+                console.error('Backend error response:', data);
                 throw new Error(data.message || 'Request failed');
             }
 
